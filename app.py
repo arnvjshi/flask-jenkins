@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 
 app = Flask(__name__)
+API_KEY = "AIajkdbaidvk16w787he1oehjl"
 
 @app.route('/')
 def home():
