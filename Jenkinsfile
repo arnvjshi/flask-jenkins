@@ -59,7 +59,13 @@ pipeline {
         stage('Health Check') {
             steps {
                 echo 'Checking health endpoint...'
-                sh 'set -eux; sleep 2; curl http://localhost:5000/api/health'
+                sh '''
+                    set -eux
+                    sleep 3
+                    # Get Flask container IP and test health endpoint
+                    FLASK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' flask-app)
+                    curl http://${FLASK_IP}:5000/api/health
+                '''
                 echo 'Health check passed!'
             }
         }
