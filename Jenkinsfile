@@ -28,15 +28,19 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image (Docker-in-Docker)') {
             steps {
                 sh 'docker build -f Dockerfile.flask -t flask-app:latest .'
             }
         }
 
-        stage('Run Container') {
+        stage('Deploy Flask Container') {
             steps {
-                sh 'docker run -d -p 5000:5000 --name flask-app-test flask-app:latest'
+                sh '''
+                    docker stop flask-app || true
+                    docker rm flask-app || true
+                    docker run -d -p 5000:5000 --name flask-app flask-app:latest
+                '''
             }
         }
 
@@ -46,9 +50,9 @@ pipeline {
             }
         }
 
-        stage('Cleanup') {
+        stage('Show App Logs') {
             steps {
-                sh 'docker stop flask-app-test && docker rm flask-app-test || true'
+                sh 'docker logs --tail 100 flask-app'
             }
         }
     }
