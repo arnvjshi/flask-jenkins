@@ -64,7 +64,7 @@ pipeline {
                     sleep 3
                     # Get Flask container IP and test health endpoint
                     FLASK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' flask-app)
-                    curl http://${FLASK_IP}:5000/api/health
+                    curl http://127.0.0.1:5000/api/health
                 '''
                 echo 'Health check passed!'
             }
