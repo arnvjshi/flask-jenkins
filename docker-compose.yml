@@ -1,4 +1,14 @@
 services:
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+    restart: unless-stopped
+
   jenkins:
     build:
       context: .
@@ -15,7 +25,13 @@ services:
     environment:
       - DOCKER_HOST=unix:///var/run/docker.sock
     restart: unless-stopped
+    depends_on:
+      - sonarqube
 
 volumes:
   jenkins_home:
+    driver: local
+  sonarqube_data:
+    driver: local
+  sonarqube_logs:
     driver: local

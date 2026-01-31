@@ -18,7 +18,7 @@ pipeline {
                 echo 'Installing Python dependencies...'
                 sh '''
                     set -eux
-                    python -m venv venv
+                    python3 -m venv venv
                     . venv/bin/activate
                     pip install -r requirements.txt
                     pip install pytest
