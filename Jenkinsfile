@@ -37,6 +37,22 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                sh '''
+                    set -eux
+                    docker run --rm \
+                        -v "$(pwd):/usr/src" \
+                        --network="host" \
+                        -e SONAR_HOST_URL="http://localhost:9000" \
+                        -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=flaskProject -Dsonar.exclusions=/.pytest_cache/" \
+                        -e SONAR_TOKEN="sqp_bad0f8e0247e0028ab6a95f803d31cd854d35ea6" \
+                        sonarsource/sonar-scanner-cli
+                '''
+            }
+        }
+
         stage('Build Docker Image (Docker-in-Docker)') {
             steps {
                 echo 'Building Docker image...'
